@@ -1,0 +1,79 @@
+#!/bin/bash
+#SBATCH --output=parallel.out
+#SBATCH --time=01:59:59
+#SBATCH --job-name=rmops
+#SBATCH --nodes=10
+#SBATCH --tasks-per-node=96
+#SBATCH --cpus-per-task=1
+#SBATCH --partition=standard96
+#SBATCH --mem=16gb
+#SBATCH -A shmvolki
+
+export SLURM_CPU_BIND=none
+
+echo $0
+
+# Get operational parameters form file nIter.txt
+numSessions=$(head -4 nIter.txt | tail -1 | awk '{print $1}')
+maxIter=$(head -5 nIter.txt | tail -1 | awk '{print $1}')
+nIter=$(tail -1 nIter.txt | awk '{print $1}')
+nodesPerSession=$(($SLURM_NNODES / $numSessions))
+
+# Generate machine files which contain the nodes to use by each model simulation
+MYNODES=$(srun -l bash -c 'hostname' | sort | awk '{print $2 ":96"}' | sort -u)
+for nSession in $(seq 1 $numSessions)
+do
+echo "$MYNODES" | head -n $(($nodesPerSession * $nSession)) | tail -n $nodesPerSession > hosts${nSession}.txt
+done
+
+# print scheduling informations
+echo "Running on hosts: $SLURM_NODELIST"
+echo "Running on $SLURM_NNODES nodes."
+echo "Running $SLURM_NTASKS tasks."
+echo "Using $nodesPerSession nodes for each model simulation"
+echo "Using the following nodes:"
+echo "$MYNODES"
+
+# start numSessions model simulations in parallel
+for nSession in $(seq 1 $numSessions)
+do 
+mpirun -machinefile hosts${nSession}.txt ./rmops \
+	-vecscatter_alltoall \
+	-numtracers 7 \
+	-i po4annual.petsc,dopini.petsc,o2annual.petsc,phyini.petsc,zooini.petsc,detini.petsc,no3annual.petsc \
+	-me Ae \
+	-mi Ai \
+	-pickup_out "pickup_"$nIter"_"$nSession".petsc" \
+	-pickup_runoff_out "pickup_runoff_"$nIter"_"$nSession".bin" \
+	-time_file "output_time_"$nSession".txt" \
+	-t0 0.0 -iter0 0 \
+	-deltat_clock 0.0013888888888889 \
+	-max_steps 2160000 -write_steps 2160000 \
+	-o "po4_"$nSession".petsc","dop_"$nSession".petsc","oxy_"$nSession".petsc","phy_"$nSession".petsc","zoo_"$nSession".petsc","det_"$nSession".petsc","no3_"$nSession".petsc" \
+	-time_avg -avg_start_time_step 2159281 -avg_time_steps 720 \
+	-avg_files "po4avg_"$nIter"_"$nSession".petsc","dopavg_"$nIter"_"$nSession".petsc","oxyavg_"$nIter"_"$nSession".petsc","phyavg_"$nIter"_"$nSession".petsc","zooavg_"$nIter"_"$nSession".petsc","detavg_"$nIter"_"$nSession".petsc","no3avg_"$nIter"_"$nSession".petsc" \
+	-external_forcing \
+	-use_profiles \
+	-nzeuph 2 \
+	-biogeochem_deltat 43200.0 \
+	-burial_sum_steps 720 \
+	-calc_misfit -misfit_file "fitness_"$nIter"_"$nSession".txt" -average_cost -cost_start_time_step 2159281 -cost_time_steps 720 \
+	-periodic_matrix -matrix_cycle_period 1.0 \
+	-matrix_cycle_step 0.0833333333333333 \
+	-periodic_biogeochem_forcing \
+	-periodic_biogeochem_cycle_period 1.0 \
+	-periodic_biogeochem_cycle_step 0.08333333333333\
+	-num_biogeochem_steps_per_ocean_step 8 \
+	-bgc_params_file "parameters_"$nIter"_"$nSession".txt" -num_bgc_params 6 \
+	-separate_biogeochem_time_stepping > "logfile-omops-asciiparams_"$nIter"_"$nSession".log" &
+done
+
+# wait for termination of all simulations and submit serial job
+# for the optimisers next iteration
+wait
+
+if [ "$nIter" -lt "$maxIter" ]; then 
+	sbatch serialMOPS.job
+fi
+
+exit
