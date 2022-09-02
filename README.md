@@ -18,25 +18,25 @@ approximately the same for different parameter vectors.
 # Matlab Implementation (Folder MATLAB)
 
 The Matlab package consists of the files
-- cmaes.m: CMA-ES code by N. Hansen (2012), version 3.61.beta from
-           http://www.cmap.polytechnique.fr/~nikolaus.hansen/cmaes_inmatlab.html
-- rcmaes.m:         R-CMA-ES code (cf. Algorithm 2 in [1])
-- hybridRanking.m:  Used to select and sort the better half of samples
-                    (for the applied mirrored sampling, this yields the same as
-                    simply selecting the better sample from each mirrored pair)
-- testf.m:          Implements a couple of bechnmark functions
-- expectedFitness.m Approximates function expectation w.r.t. random component
-- rcmaesVScmaes.m:  Compares R-CMA-ES and CMA-ES w.r.t. a single test instance
-- testRcmaes.m:     Testbed comparing R-CMA-ES and CMA-ES for 10 test instances
-                    using 5 test functions
+- *cmaes.m*: CMA-ES code by N. Hansen (2012), version 3.61.beta from
+  http://www.cmap.polytechnique.fr/~nikolaus.hansen/cmaes_inmatlab.html
+- *rcmaes.m*: R-CMA-ES code (cf. Algorithm 2 in [1])
+- *hybridRanking.m*: Used to select and sort the better half of samples
+  (for the applied mirrored sampling, this yields the same as
+  simply selecting the better sample from each mirrored pair)
+- *testf.m*: Implements a couple of bechnmark functions
+- *expectedFitness.m*: Approximates function expectation w.r.t. random component
+- *rcmaesVScmaes.m*: Compares R-CMA-ES and CMA-ES w.r.t. a single test instance
+- *testRcmaes.m*: Testbed comparing R-CMA-ES and CMA-ES for 10 test instances
+  using 5 test functions
 
 Currently, in order to invoke "cmaes.m", the five test functions from "testf.m"
 that are used in the testbed are implemented solely as
-- linear1.m
-- sphere.m
-- rosenbrock.m
-- griewank.m
-- rastrigin.m
+- *linear1.m*
+- *sphere.m*
+- *rosenbrock.m*
+- *griewank.m*
+- *rastrigin.m*
 
 # C++ Implementation (Folder CPP)
 
@@ -65,18 +65,18 @@ Operational settings and an iteration history is recorded in the file
 ### Generating Executables
 
 The package consists of the files
-- README		// this file
-- eigen-3.4.0.tar.gz // a copy of the "Eigen" algebra package
-- rcmaes.cpp		// the main source of the CMAES algorithm
-- auxiliaries.cpp/hpp	// some auxiliary functions required by CMAES
-- eigenreq.hpp		// path to required EIGEN algebra package and some defs
-- testfunctions.cpp	// collection of testfunctions for optimization
-- Makefile		// generates executables
-- nIter0.dat		// sample interface file (with operational settings)
-- serial.job		// serial job file (starting RCMAES optimizer)
-- parallel.job		// parallel job file (starting parallel model runs)
-- unchained.sh      // shell script doing both, optimizer iterations
-                    // and objective function evaluations
+- *README*: This file
+- *eigen-3.4.0.tar.gz*: A copy of the "Eigen" algebra package
+- *rcmaes.cpp*: The main source of the CMAES algorithm
+- *auxiliaries.cpp/hpp*: Some auxiliary functions required by CMAES
+- *eigenreq.hpp*: Path to required EIGEN algebra package and some defs
+- *testfunctions.cpp*: Collection of testfunctions for optimization
+- *Makefile*: Generates executables
+- *nIter0.dat*: Sample interface file (with operational settings)
+- *serial.job*: Serial job file (starting RCMAES optimizer)
+- *parallel.job*: Parallel job file (starting parallel model runs)
+- *unchained.sh*: Shell script doing both, optimizer iterations
+  and objective function evaluations
 
 In order to generate executables, the "Eigen" algebra package must be available
 on the system. It can be downloaded from
