@@ -1,3 +1,6 @@
+[![DOI](https://zenodo.org/badge/532043505.svg)](https://zenodo.org/badge/latestdoi/532043505)
+
+
 The repository provides C++ and Matlab implementations of R-CMA-ES,
 a variant of the Covariance Matrix Adaption Evolution Strategy.
 R-CMA-ES allows to declare random components.
