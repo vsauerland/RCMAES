@@ -3,12 +3,8 @@ maxIter=$(head -5 nIter.txt | tail -1 | awk '{print $1}')
 startIter=$(tail -1 nIter.txt | awk '{print $1}')
 for nIter in $(seq $startIter $maxIter)
 do
-        terminate=$(tail -1 nIter.txt | awk '{print $3}')
         ./rcmaes $nIter nIter.txt > serial_$nIter.log
         if [ "$?" -ne 0 ]; then
-                exit
-        fi
-        if [ "$terminate" -eq 1 ]; then
                 exit
         fi
         for nSession in $(seq 1 $numSessions)
