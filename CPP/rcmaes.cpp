@@ -525,10 +525,18 @@ int main( int argc, char* argv[] )
 	writeScaledSamples( nI, lambda, N, lb, ub, arx );
 	writeAlgVars( nI, lambda, N, counteval, sigma, pc, ps, C, B, D, arz, ary, arx, penalty, xmean );
 	writeMuDB( nI, N, xmean, sigma, D, B ); // data for illustrations with standard deviation ellipses
+
 	// update nIter.txt
 	ofstream f;
 	f.open( "nIter.txt", ofstream::out | ofstream::app );
-	f << nI + 1 << " " << arfitness( 0 ) << " 0" << "\n";
+	// VS, 12.7.2023: write parameter values instead of misfit value into logfile "nIter.txt"
+	// f << nI + 1 << " " << arfitness( 0 ) << " 0" << "\n";
+	f << nI + 1;
+	for ( int i = 0; i < N; i++ )
+	{
+		f << " " << lb( i ) + ( ub( i ) - lb( i ) ) * arx( i, 0 );
+	}
+	f << endl;
 	f.close();
 	return( 0 );
 }
