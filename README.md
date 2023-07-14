@@ -118,7 +118,7 @@ have not all been written to the corresponding files!
 
 # Additional Material
 
-The tarball "MOPS.tar" contains the Transport Matrix Method (TMM) code of the
+The folder MOPS contains the Transport Matrix Method (TMM) code of the
 ocean biogeochemical model MOPS as applied in [1] and originally applied in [2].
 Recent TMM code can be found under "https://github.com/samarkhatiwala/tmm".
 You also need to download additional files from the GIT repositories branch
@@ -127,8 +127,8 @@ and generate the required transport matrices, and forcing and geometry data
 according to steps 2), 3), and 5) of their "README.txt".
 You also need to install PETSc according to step 1) of their "README.txt"
 in order to compile the MOPS code.
-After unpacking the folder "MOPS" can be compiled by typing "make rmops".
-Our files "nIter.txt", "serial.job", and "parallel.job" in our folder
+The code can then be compiled with "make rmops".
+Our files "nIter.txt", "serial.job", and "parallel.job" in folder
 "CPP/optimizingMOPS" serve as template for the calibration of MOPS
 using RCMAES and the "slurm" workload manager, as done by [1] and [2].
 
