@@ -1,0 +1,5 @@
+This folder is only an interim test folder.
+The deposed tool to convert model-output cannot be applied without additional
+python sources by Samar Khatiwala (which are part of a python based variant of
+his Matlab implementation of Anderson Acceleration for fast BGC model spin-up,
+cf. https://github.com/samarkhatiwala/AndersonAcceleration)
